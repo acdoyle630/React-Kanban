@@ -1,5 +1,6 @@
 const queueContainer = document.getElementById('queue');
 const inProgressContainer = document.getElementById('inProgress');
+
 const done = document.getElementById('done');
 
 const getCards = () => new Promise((resolve, reject) =>{
