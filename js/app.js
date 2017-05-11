@@ -36,7 +36,7 @@ const Card = (props) => (
     <p>Assigned to: { props.card.assigned_to}</p>
     <input type="button" onClick={
       function(){
-        props.next();
+        props.next(props.card.id);
       }
     } value="Next Stage"/>
   </li>
@@ -168,7 +168,11 @@ class App extends React.Component{
       cards: [],
     };
     this.addCard = this.addCard.bind(this);
+
+    this.nextStage = this.nextStage.bind(this);
+
   }
+
   componentDidMount() {
     this.getFakeCards()
       .then(cards =>{
@@ -182,9 +186,38 @@ class App extends React.Component{
     });
   }
 
-  nextStage(){
-    this.card.status = "In Progress";
-    console.log(this.card.status);
+  nextStage(id){
+   let newArray = [];
+   let cardArrayIndex;
+   console.log('hit handle next')
+   console.log(id)
+   let cardArray = this.state.cards
+   console.log(cardArray);
+    for(var i=0; i<cardArray.length; i++){
+      if(cardArray[i].id === id){
+        if(cardArray[i].status === "Complete"){
+          alert("already Completed")
+          newArray.push(cardArray[i])
+        }
+        if(cardArray[i].status === "In Progress"){
+          cardArray[i].status = "Complete"
+          newArray.push(cardArray[i])
+        }
+        if(cardArray[i].status === "Queue"){
+          cardArray[i].status = "In Progress"
+          newArray.push(cardArray[i])
+        }
+      }
+      else {
+        newArray.push(cardArray[i])
+      }
+    }
+    console.log(newArray)
+
+    this.setState({
+      cards : newArray
+    })
+
   }
 
   getFakeCards(){
@@ -211,18 +244,21 @@ class App extends React.Component{
 
     return(
       <div id="board">
-        <div id="queuedBoard">
+      <div id='newForm'>
           <NewCardForm addCard={this.addCard}/>
+          </div>
+
+        <div id="queuedBoard">
           <h1>Queued Tasks</h1>
           <CardList cards={queuedCards} next={this.nextStage}></CardList>
         </div>
         <div id="inProgressBoard">
           <h1>Inprogress Tasks</h1>
-          <CardList cards={inProgressCards}></CardList>
+          <CardList cards={inProgressCards} next={this.nextStage}></CardList>
         </div>
         <div id="DoneBoard">
           <h1>Completed Tasks</h1>
-          <CardList cards={completedCards}></CardList>
+          <CardList cards={completedCards} next={this.nextStage}></CardList>
         </div>
       </div>
 

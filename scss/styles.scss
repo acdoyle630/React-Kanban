@@ -1,0 +1,24 @@
+body{
+  background-color: lightBlue;
+}
+
+#board{
+  display: flex;
+  flex-direction: rows;
+  justify-content: space-between;
+  #queuedBoard{
+    color: green;
+  }
+  #inProgressBoard{
+    color:yellow;
+  }
+  #DoneBoard{
+    color:red;
+  }
+}
+
+
+
+#header{
+  text-align:center;
+}
