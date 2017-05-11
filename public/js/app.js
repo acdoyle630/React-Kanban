@@ -26,6 +26,10 @@ const getCards = () => new Promise((resolve, reject) =>{
     ];
     setTimeout(() => resolve(
       cardsFromGetCards),250);
+
+
+
+
 });
 
 const Card = (props) => (
@@ -82,7 +86,7 @@ class NewCardForm extends React.Component {
   }
 
     addCard(card){
-      console.log(card);
+      console.log(cards);
       this.props.addCard(card);
       const title = "";
       const priority = "";
@@ -184,6 +188,8 @@ class App extends React.Component{
     }
 
   addCard(card){
+    //cardsFromGetCards.push(card)
+    console.log(cardsFromGetCards)
     this.setState({
       cards : this.state.cards.concat(card)
     });
@@ -271,7 +277,6 @@ class App extends React.Component{
           <CardList cards={completedCards} next={this.nextStage}></CardList>
         </div>
       </div>
-
     );
   }
 };
