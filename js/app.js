@@ -11,7 +11,8 @@ const getCards = () => new Promise((resolve, reject) =>{
         priority: "High",
         status: "Queue",
         created_by: "Adam",
-        assigned_to: "Bob"
+        assigned_to: "Bob",
+        button: "Next Stage"
       },
       {
         id: 2,
@@ -19,7 +20,8 @@ const getCards = () => new Promise((resolve, reject) =>{
         priority: "Medium",
         status: "Queue",
         created_by: "Adam",
-        assigned_to: "Kat"
+        assigned_to: "Kat",
+        button: "Next Stage"
       }
     ];
     setTimeout(() => resolve(
@@ -38,7 +40,7 @@ const Card = (props) => (
       function(){
         props.next(props.card.id);
       }
-    } value="Next Stage"/>
+    } value= { props.card.button }/>
   </li>
 );
 
@@ -63,7 +65,8 @@ class NewCardForm extends React.Component {
       priority: "",
       status: "Queue",
       created_by: "",
-      assigned_to: ""
+      assigned_to: "",
+      button: "Next Stage"
     };
 
 
@@ -195,8 +198,15 @@ class App extends React.Component{
    console.log(cardArray);
     for(var i=0; i<cardArray.length; i++){
       if(cardArray[i].id === id){
+
+        if(cardArray[i].button==="clear"){
+         cardArray[i].status = 'Ova'
+        }
+
         if(cardArray[i].status === "Complete"){
           alert("already Completed")
+          cardArray[i].button = "clear"
+          console.log(cardArray[i])
           newArray.push(cardArray[i])
         }
         if(cardArray[i].status === "In Progress"){
