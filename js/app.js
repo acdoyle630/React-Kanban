@@ -34,7 +34,11 @@ const Card = (props) => (
     <p>Status: { props.card.status}</p>
     <p>Created by: { props.card.created_by}</p>
     <p>Assigned to: { props.card.assigned_to}</p>
-    <input type="button" onClick={props.next} value="Next Stage"/>
+    <input type="button" onClick={
+      function(){
+        props.next();
+      }
+    } value="Next Stage"/>
   </li>
 );
 
@@ -179,7 +183,8 @@ class App extends React.Component{
   }
 
   nextStage(){
-    console.log('clicked');
+    this.card.status = "In Progress";
+    console.log(this.card.status);
   }
 
   getFakeCards(){
