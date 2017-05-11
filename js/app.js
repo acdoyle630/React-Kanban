@@ -1,7 +1,7 @@
-const queueContainer = document.getElementById('queue');
+const queueContainer = document.getElementById('kanbanBoard');
 const inProgressContainer = document.getElementById('inProgress');
-
 const done = document.getElementById('done');
+
 
 const getCards = () => new Promise((resolve, reject) =>{
   const cardsFromGetCards = [
@@ -34,17 +34,19 @@ const Card = (props) => (
     <p>Status: { props.card.status}</p>
     <p>Created by: { props.card.created_by}</p>
     <p>Assigned to: { props.card.assigned_to}</p>
+    <input type="button" onClick={props.next} value="Next Stage"/>
   </li>
 );
 
 
-const CardList = ({ cards }) =>(
+const CardList = ({ cards, next }) =>(
   <ul>
-    {  cards.map(card => <Card card={card} /> ) }
+    {  cards.map(card => <Card card={card} next={next} /> ) }
   </ul>
   );
 
 let id = 3;
+
 
 class NewCardForm extends React.Component {
   constructor(props){
@@ -97,12 +99,6 @@ class NewCardForm extends React.Component {
       this.addCard(this.state);
     }
 
-    // handleIdChange(event) {
-    //   console.log('hit handled id change')
-    //   console.log(this.state)
-    //   event.preventDefault();
-    //   this.setState({ id: event.target.value });
-    // }
     handleTitleChange(event){
       console.log('hit handle title change')
       event.preventDefault();
@@ -169,7 +165,7 @@ class App extends React.Component{
     };
     this.addCard = this.addCard.bind(this);
   }
-  componentWillMount() {
+  componentDidMount() {
     this.getFakeCards()
       .then(cards =>{
         this.setState({ cards });
@@ -182,17 +178,49 @@ class App extends React.Component{
     });
   }
 
+  nextStage(){
+    console.log('clicked');
+  }
+
   getFakeCards(){
     return  getCards();
   }
 
   render(){
+     let allCards = this.state.cards;
+     let queuedCards =[];
+     let inProgressCards =[];
+     let completedCards = [];
+
+     for(var i = 0; i<allCards.length; i++){
+      if (allCards[i].status === "Queue"){
+        queuedCards.push(allCards[i]);
+      }
+      if (allCards[i].status === "In Progress"){
+        inProgressCards.push(allCards[i]);
+      }
+      if (allCards[i].status === "Complete"){
+        completedCards.push(allCards[i]);
+      }
+     }
+
     return(
-      <div>
-        <h1>Hello Cards</h1>
-        <CardList cards={this.state.cards}></CardList>
-        <NewCardForm addCard={this.addCard}/>
+      <div id="board">
+        <div id="queuedBoard">
+          <NewCardForm addCard={this.addCard}/>
+          <h1>Queued Tasks</h1>
+          <CardList cards={queuedCards} next={this.nextStage}></CardList>
+        </div>
+        <div id="inProgressBoard">
+          <h1>Inprogress Tasks</h1>
+          <CardList cards={inProgressCards}></CardList>
+        </div>
+        <div id="DoneBoard">
+          <h1>Completed Tasks</h1>
+          <CardList cards={completedCards}></CardList>
+        </div>
       </div>
+
     );
   }
 };
