@@ -31,11 +31,93 @@ const Card = (props) => (
 );
 
 
+
 const CardList = ({ cards, next }) =>(
   <ul>
     {  cards.map(card => <Card card={card} next={next} /> ) }
   </ul>
   );
+
+
+
+
+
+
+
+
+
+class LoginForm extends React.Component {
+  constructor(props){
+
+    super(props);
+
+    this.state = {
+      username: "",
+      password: ""
+    };
+    this.handlePasswordChange = this.handlePasswordChange.bind(this)
+    this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this)
+    this.handleUserNameChange = this.handleUserNameChange.bind(this)
+  }
+
+  clearForm(state){
+
+    this.setState ({
+      username: "",
+      password: ""
+    });
+  }
+
+  handleSignUpSubmit(event){
+    event.preventDefault()
+    let userObj = Object.assign({}, this.state)
+    this.signUp(userObj);
+    this.clearForm(this.state)
+  }
+
+  handlePasswordChange(event){
+    event.preventDefault()
+    this.setState({ password: event.target.value});
+  }
+
+  handleUserNameChange(event){
+    event.preventDefault()
+    this.setState({ username: event.target.value});
+  }
+
+  signUp(user){
+    console.log(user)
+  }
+
+
+
+    render(){
+      return(
+        <form onSubmit={this.handleSignUpSubmit}>
+          <div>
+            <input type="text" placeholder="Username" onChange={this.handleUserNameChange} value={this.state.username} />
+          </div>
+
+          <div>
+            <input type="password" placeholder="Password" onChange={this.handlePasswordChange} value={this.state.password} />
+          </div>
+
+          <div>
+            <button type="submit">Login</button>
+          </div>
+        </form>
+    )}
+}
+
+
+
+
+
+
+
+
+
+
 
 
 class NewCardForm extends React.Component {
@@ -48,9 +130,7 @@ class NewCardForm extends React.Component {
       priority: "",
       created_by: "",
       assigned_to: ""
-    };
-
-
+    }
     this.handleSubmit = this.handleSubmit.bind(this)
 
     this.handleTitleChange = this.handleTitleChange.bind(this);
@@ -63,7 +143,6 @@ class NewCardForm extends React.Component {
   }
 
     clearForm(card){
-      console.log(card);
       this.setState({
         title: "",
         priority: "",
@@ -73,38 +152,30 @@ class NewCardForm extends React.Component {
     }
 
     handleSubmit(event) {
-      //console.log(event);
-      console.log('hit handle submit');
       event.preventDefault();
-      console.log(this.state);
       let cardObj = Object.assign({}, this.state)
       this.props.addCard(cardObj);
       this.clearForm(this.state);
     }
 
     handleTitleChange(event){
-      console.log('hit handle title change')
       event.preventDefault();
       this.setState({ title: event.target.value });
     }
     handleStatusChange(event){
-      console.log('hit handle status change')
       event.preventDefault();
       this.setState({ status: event.target.value});
     }
     handlePriorityChange(event){
-      console.log('hit handle priority change')
       event.preventDefault();
       this.setState({ priority: event.target.value });
     }
     handleCreatedByChange(event) {
-      console.log('hit handle created by change')
       event.preventDefault();
       this.setState({ created_by: event.target.value });
     }
 
     handleAssignedToChange(event){
-      console.log('hit handle assigned to change')
       event.preventDefault();
       this.setState({ assigned_to: event.target.value});
     }
@@ -155,14 +226,11 @@ class App extends React.Component{
   componentDidMount() {
     this.getFakeCards()
       .then(cards =>{
-        console.log(`got cards: ${cards}`)
         this.setState({ cards });
       });
     }
 
   addCard(card){
-    console.log(card)
-    console.log('hit add card on app')
     fetch('/api/cards', {
       method: 'POST',
       headers:
@@ -176,14 +244,9 @@ class App extends React.Component{
         throw err;
       })
       .then(data =>{
-        console.log(`data: ${data}`);
-        console.log(data);
-        console.log(typeof card);
-        console.log(card);
         this.setState({
           cards : this.state.cards.concat(card)
         });
-             console.log(this.state)
       })
 
     this.componentDidMount();
@@ -192,7 +255,6 @@ class App extends React.Component{
 
   nextStage(id){
    let cardindex = this.changeStatus(id)
-   console.log(cardindex)
    let newArray = [];
    let cardArrayIndex;
    let cardArray = this.state.cards
@@ -222,8 +284,6 @@ class App extends React.Component{
         newArray.push(cardArray[i])
       }
     }
-    console.log(newArray)
-
     this.setState({
       cards : newArray
     })
@@ -231,7 +291,6 @@ class App extends React.Component{
   }
 
   deleteCard(card){
-    console.log(card);
     fetch('/api/cards', {
       method: "DELETE",
       headers:
@@ -241,7 +300,7 @@ class App extends React.Component{
         },
       body: JSON.stringify(card)
     })
-    .then(console.log('deleted'))
+    .then(console.log('success'))
     .catch(err =>{
       throw err;
     })
@@ -273,6 +332,8 @@ class App extends React.Component{
       })
   }
 
+
+
   render(){
 
      let allCards = this.state.cards;
@@ -294,9 +355,15 @@ class App extends React.Component{
 
     return(
       <div id="board">
+
       <div id='newForm'>
           <NewCardForm addCard={this.addCard}/>
           </div>
+
+      <div id='LoginForm'>
+          <LoginForm />
+          </div>
+
 
         <div id="queuedBoard">
           <h1>Queued Tasks</h1>
