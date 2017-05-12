@@ -15,7 +15,7 @@ const getCards = () => fetch('/api/cards', {
   })
 
 const Card = (props) => (
-  <li>
+  <li className="task">
     <h3>Title: { props.card.title }</h3>
     <p>id: { props.card.id }</p>
     <p>Priority: { props.card.priority }</p>
@@ -259,24 +259,8 @@ class App extends React.Component{
       })
   }
 
-  // findIndexOfId(id){
-  //   let current;
-  //   console.log(id)
-  //   let cardArray = this.state.cards;
-  //   for(var i=0; i<cardArray.length; i++){
-  //     if(cardArray[i].id === id){
-  //       console.log(cardArray[i])
-  //       console.log(i)
-  //     }
-  //   }
-  //   console.log(this.state.cards)
-  //   console.log(current)
-  //   console.log(this.state.cards.indexOf(current))
-  // }
-
   render(){
-    // console.log('rendering')
-    // console.log(this.state.cards)
+
      let allCards = this.state.cards;
      let queuedCards =[];
      let inProgressCards =[];

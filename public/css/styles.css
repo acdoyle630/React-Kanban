@@ -12,5 +12,8 @@ body {
   #board #DoneBoard {
     color: red; }
 
+#task {
+  border: black solid 1px; }
+
 #header {
   text-align: center; }
