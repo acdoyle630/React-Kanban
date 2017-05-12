@@ -10,12 +10,13 @@ const bodyParser = require('body-parser');
 
 app.use(express.static('public'));
 
+app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({extended:false}));
+app.use('/api', require('./api'));
+
 
 app.listen(3000, () =>{
   console.log(`listening on port: ${PORT}`);
-  db.sequelize.sync();
+  db.sequelize.sync({forceSync: true});
 });
 
-module.exports = app;

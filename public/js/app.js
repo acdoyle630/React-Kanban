@@ -3,29 +3,45 @@ const inProgressContainer = document.getElementById('inProgress');
 const done = document.getElementById('done');
 
 
+
+
 const getCards = () => new Promise((resolve, reject) =>{
-  const cardsFromGetCards = [
-      {
-        id: 1,
-        title: "test task",
-        priority: "High",
-        status: "Queue",
-        created_by: "Adam",
-        assigned_to: "Bob",
-        button: "Next Stage"
-      },
-      {
-        id: 2,
-        title: "Laundry",
-        priority: "Medium",
-        status: "Queue",
-        created_by: "Adam",
-        assigned_to: "Kat",
-        button: "Next Stage"
-      }
-    ];
-    setTimeout(() => resolve(
-      cardsFromGetCards),250);
+  let  allOfTheCards;
+  fetch('/api/cards', {
+    method: 'GET'
+  }).then((response) =>{
+    return response.json()
+  }).then((data) =>{
+    allOfTheCards = data
+    return resolve(allOfTheCards);
+  })
+
+
+
+  // const cardsFromGetCards =
+   //allOfTheCards
+   // [
+   //    {
+   //      id: 1,
+   //      title: "test task",
+   //      priority: "High",
+   //      status: "Queue",
+   //      created_by: "Adam",
+   //      assigned_to: "Bob",
+   //      button: "Next Stage"
+   //    },
+   //    {
+   //      id: 2,
+   //      title: "Laundry",
+   //      priority: "Medium",
+   //      status: "Queue",
+   //      created_by: "Adam",
+   //      assigned_to: "Kat",
+   //      button: "Next Stage"
+   //    }
+   //  ];
+   //  setTimeout(() => resolve(
+   //    allOfTheCards),250);
 
 
 
@@ -55,8 +71,6 @@ const CardList = ({ cards, next }) =>(
   </ul>
   );
 
-let id = 3;
-
 
 class NewCardForm extends React.Component {
   constructor(props){
@@ -64,7 +78,7 @@ class NewCardForm extends React.Component {
     super(props);
 
     this.state = {
-      id: id,
+      //id: id++,
       title: "",
       priority: "",
       status: "Queue",
@@ -85,20 +99,15 @@ class NewCardForm extends React.Component {
     this.handleAssignedToChange = this.handleAssignedToChange.bind(this);
   }
 
-    addCard(card){
-      console.log(cards);
-      this.props.addCard(card);
-      const title = "";
-      const priority = "";
-      const created_by = "";
-      const assigned_to = "";
+    clearForm(card){
+      console.log(card);
       this.setState({
-        id,
-        title,
-        priority,
-        status,
-        created_by,
-        assigned_to
+        id: "",
+        title: "",
+        priority: "",
+        status: "",
+        created_by: "",
+        assigned_to: ""
       });
     }
 
@@ -107,7 +116,9 @@ class NewCardForm extends React.Component {
       id++;
       event.preventDefault();
       console.log(this.state);
-      this.addCard(this.state);
+      let cardObj = Object.assign({}, this.state)
+      this.props.addCard(cardObj);
+      this.clearForm(this.state);
     }
 
     handleTitleChange(event){
@@ -183,13 +194,15 @@ class App extends React.Component{
   componentDidMount() {
     this.getFakeCards()
       .then(cards =>{
+        console.log(`got cards: ${cards}`)
         this.setState({ cards });
       });
     }
 
   addCard(card){
+    console.log('hit add card on app')
     //cardsFromGetCards.push(card)
-    console.log(cardsFromGetCards)
+    //console.log(cardsFromGetCards)
     this.setState({
       cards : this.state.cards.concat(card)
     });
@@ -241,6 +254,7 @@ class App extends React.Component{
   }
 
   render(){
+    console.log('rendering')
      let allCards = this.state.cards;
      let queuedCards =[];
      let inProgressCards =[];
