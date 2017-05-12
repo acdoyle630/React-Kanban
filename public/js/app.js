@@ -5,48 +5,14 @@ const done = document.getElementById('done');
 
 
 
-const getCards = () => new Promise((resolve, reject) =>{
-  let  allOfTheCards;
-  fetch('/api/cards', {
+const getCards = () => fetch('/api/cards', {
     method: 'GET'
   }).then((response) =>{
     return response.json()
-  }).then((data) =>{
-    allOfTheCards = data
-    return resolve(allOfTheCards);
   })
-
-
-
-  // const cardsFromGetCards =
-   //allOfTheCards
-   // [
-   //    {
-   //      id: 1,
-   //      title: "test task",
-   //      priority: "High",
-   //      status: "Queue",
-   //      created_by: "Adam",
-   //      assigned_to: "Bob",
-   //      button: "Next Stage"
-   //    },
-   //    {
-   //      id: 2,
-   //      title: "Laundry",
-   //      priority: "Medium",
-   //      status: "Queue",
-   //      created_by: "Adam",
-   //      assigned_to: "Kat",
-   //      button: "Next Stage"
-   //    }
-   //  ];
-   //  setTimeout(() => resolve(
-   //    allOfTheCards),250);
-
-
-
-
-});
+  .catch(err => {
+    throw err;
+  })
 
 const Card = (props) => (
   <li>
@@ -78,13 +44,10 @@ class NewCardForm extends React.Component {
     super(props);
 
     this.state = {
-      //id: id++,
       title: "",
       priority: "",
-      status: "Queue",
       created_by: "",
-      assigned_to: "",
-      button: "Next Stage"
+      assigned_to: ""
     };
 
 
@@ -102,18 +65,16 @@ class NewCardForm extends React.Component {
     clearForm(card){
       console.log(card);
       this.setState({
-        id: "",
         title: "",
         priority: "",
-        status: "",
         created_by: "",
         assigned_to: ""
       });
     }
 
     handleSubmit(event) {
+      //console.log(event);
       console.log('hit handle submit');
-      id++;
       event.preventDefault();
       console.log(this.state);
       let cardObj = Object.assign({}, this.state)
@@ -151,7 +112,7 @@ class NewCardForm extends React.Component {
       return(
         <form onSubmit={this.handleSubmit}>
           <div>
-            <input type="text" placeholder="title" onChange={this.handleTitleChange} value={this.state.title} />
+            <input type="text" placeholder="Title" onChange={this.handleTitleChange} value={this.state.title} />
           </div>
 
           <div>
@@ -200,15 +161,38 @@ class App extends React.Component{
     }
 
   addCard(card){
+    console.log(card)
     console.log('hit add card on app')
-    //cardsFromGetCards.push(card)
-    //console.log(cardsFromGetCards)
-    this.setState({
-      cards : this.state.cards.concat(card)
-    });
+    fetch('/api/cards', {
+      method: 'POST',
+      headers:
+        {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+      body: JSON.stringify(card)
+      })
+      .catch(err => {
+        throw err;
+      })
+      .then(data =>{
+        console.log(`data: ${data}`);
+        console.log(data);
+        console.log(typeof card);
+        console.log(card);
+        this.setState({
+          cards : this.state.cards.concat(card)
+        });
+             console.log(this.state)
+      })
+
+    this.componentDidMount();
+
   }
 
   nextStage(id){
+   let cardindex = this.changeStatus(id)
+   console.log(cardindex)
    let newArray = [];
    let cardArrayIndex;
    console.log('hit handle next')
@@ -253,8 +237,46 @@ class App extends React.Component{
     return  getCards();
   }
 
+  changeStatus(id){
+    let current;
+    for(var i = 0; i<this.state.cards.length; i++){
+      if(this.state.cards[i].id === id){
+        current = this.state.cards[i];
+        console.log(current)
+      }
+    }
+    fetch('/api/cards', {
+      method: 'PUT',
+      headers:
+        {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+      body: JSON.stringify(current)
+      })
+      .catch(err => {
+        throw err;
+      })
+  }
+
+  // findIndexOfId(id){
+  //   let current;
+  //   console.log(id)
+  //   let cardArray = this.state.cards;
+  //   for(var i=0; i<cardArray.length; i++){
+  //     if(cardArray[i].id === id){
+  //       console.log(cardArray[i])
+  //       console.log(i)
+  //     }
+  //   }
+  //   console.log(this.state.cards)
+  //   console.log(current)
+  //   console.log(this.state.cards.indexOf(current))
+  // }
+
   render(){
-    console.log('rendering')
+    // console.log('rendering')
+    // console.log(this.state.cards)
      let allCards = this.state.cards;
      let queuedCards =[];
      let inProgressCards =[];

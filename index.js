@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 
 app.use(express.static('public'));
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({extended: true}));
 
 app.use('/api', require('./api'));
 
