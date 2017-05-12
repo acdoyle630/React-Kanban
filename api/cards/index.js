@@ -41,7 +41,7 @@ cards.put('/', (req,res) =>{
 });
 
 cards.delete('/', (req,res) =>{
-  console.log(req.body.id);
+  console.log(req.body);
   Card.destroy({
     where: {id: req.body.id}
   });

@@ -195,21 +195,18 @@ class App extends React.Component{
    console.log(cardindex)
    let newArray = [];
    let cardArrayIndex;
-   console.log('hit handle next')
-   console.log(id)
    let cardArray = this.state.cards
-   console.log(cardArray);
     for(var i=0; i<cardArray.length; i++){
       if(cardArray[i].id === id){
 
         if(cardArray[i].button==="clear"){
+         this.deleteCard(cardArray[i])
          cardArray[i].status = 'Ova'
         }
 
         if(cardArray[i].status === "Complete"){
           alert("already Completed")
           cardArray[i].button = "clear"
-          console.log(cardArray[i])
           newArray.push(cardArray[i])
         }
         if(cardArray[i].status === "In Progress"){
@@ -231,6 +228,23 @@ class App extends React.Component{
       cards : newArray
     })
 
+  }
+
+  deleteCard(card){
+    console.log(card);
+    fetch('/api/cards', {
+      method: "DELETE",
+      headers:
+        {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+      body: JSON.stringify(card)
+    })
+    .then(console.log('deleted'))
+    .catch(err =>{
+      throw err;
+    })
   }
 
   getFakeCards(){
