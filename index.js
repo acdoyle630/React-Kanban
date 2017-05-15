@@ -84,10 +84,10 @@ passport.use(new LocalStrategy (
   }
 ));
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/api',
-  failureRedirect: '/user/new'
-}));
+// app.post('/login', passport.authenticate('local', {
+//   successRedirect: '/api',
+//   failureRedirect: '/user/new'
+// }));
 
 app.use('/api', require('./api'));
 
